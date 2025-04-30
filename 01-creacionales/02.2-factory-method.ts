@@ -35,19 +35,27 @@ interface Report {
 // Implementar SalesReport e InventoryReport
 
 class SalesReport implements Report {
-  // TODO: implementar el método e imprimir en consola:
-  // 'Generando reporte de ventas...'
+  generate() {
+    console.log("Generando reporte de ventas...");
+  }
 }
 
 class InventoryReport implements Report {
-  // TODO: implementar el método e imprimir en consola:
-  // 'Generando reporte de inventario...'
+  generate() {
+    console.log("Generando reporte de inventario...");
+  }
+}
+
+class MarketingReport implements Report {
+  generate() {
+    console.log("Generando reporte de marketing...");
+  }
 }
 
 // 3. Clase Base ReportFactory con el Método Factory
 
 abstract class ReportFactory {
-  abstract createReport(): Report;
+  protected abstract createReport(): Report;
 
   generateReport(): void {
     const report = this.createReport();
@@ -59,13 +67,19 @@ abstract class ReportFactory {
 
 class SalesReportFactory extends ReportFactory {
   createReport(): Report {
-    throw new Error('Method not implemented.');
+    return new SalesReport();
   }
 }
 
 class InventoryReportFactory extends ReportFactory {
   createReport(): Report {
-    throw new Error('Method not implemented.');
+    return new InventoryReport();
+  }
+}
+
+class MarketingReportFactory extends ReportFactory {
+  createReport(): Report {
+    return new MarketingReport();
   }
 }
 
@@ -74,15 +88,24 @@ class InventoryReportFactory extends ReportFactory {
 function main() {
   let reportFactory: ReportFactory;
 
-  const reportType = prompt(
-    '¿Qué tipo de reporte deseas? %c(sales/inventory)',
-    COLORS.red
-  );
+  const reportType = prompt('¿Qué tipo de reporte deseas? (Sales/Inventory/Marketing)');
 
-  if (reportType === 'sales') {
-    reportFactory = new SalesReportFactory();
-  } else {
-    reportFactory = new InventoryReportFactory();
+  switch ( reportType?.toLowerCase() ) {
+    case 'sales':
+      reportFactory = new SalesReportFactory();
+      break;
+
+    case 'inventory':
+      reportFactory = new InventoryReportFactory();
+      break;
+
+    case 'marketing':
+      reportFactory = new MarketingReportFactory();
+      break;
+
+    default:
+      console.log("Invalid report type");
+      return;
   }
 
   reportFactory.generateReport();
