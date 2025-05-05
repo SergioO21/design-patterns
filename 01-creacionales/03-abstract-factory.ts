@@ -12,8 +12,79 @@
  * https://refactoring.guru/es/design-patterns/abstract-factory
  */
 
+import { COLORS } from "../helpers/colors.ts";
+
 /**
  *  El propósito del Abstract Factory es crear familias de objetos relacionados
  *  (en este caso, hamburguesas y bebidas) sin especificar las clases concretas
  *  de cada uno de esos objetos en el código principal.
  */
+
+interface Burger {
+  prepare(): void;
+}
+
+interface Drink {
+  pour(): void;
+}
+
+class ChickenBurger implements Burger {
+  prepare(): void {
+    console.log('Preparando hamburguesa de %cPollo', COLORS.yellow);
+  }
+}
+
+class BeefBurger implements Burger {
+  prepare(): void {
+    console.log('Preparando hamburguesa de %cRes', COLORS.red);
+  }
+}
+
+class Water implements Drink {
+  pour(): void {
+    console.log('Sirviendo un vaso de %cAgua', COLORS.blue);
+  }
+}
+
+class Soda implements Drink {
+  pour(): void {
+    console.log('Sirviendo un vaso de %cGaseosa', COLORS.orange);
+  }
+}
+
+interface RestaurantFactory {
+  createDrink(): Drink;
+  createBurger(): Burger;
+}
+
+class FastFoodRestaurantFactory implements RestaurantFactory {
+  createDrink(): Drink {
+    return new Soda();
+  }
+  createBurger(): Burger {
+    return new BeefBurger();
+  }
+}
+
+class HealthyRestaurantFactory implements RestaurantFactory {
+  createDrink(): Drink {
+    return new Water();
+  }
+  createBurger(): Burger {
+    return new ChickenBurger();
+  }
+}
+
+function main(factory: RestaurantFactory) {
+  const burger = factory.createBurger();
+  const drink = factory.createDrink();
+
+  burger.prepare();
+  drink.pour();
+}
+
+console.log("\n%cRegular Fast Food Menu", COLORS.red);
+main( new FastFoodRestaurantFactory() );
+
+console.log("\n%cRegular Healthy Food Menu", COLORS.green);
+main( new HealthyRestaurantFactory() );
